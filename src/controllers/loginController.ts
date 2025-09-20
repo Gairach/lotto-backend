@@ -30,6 +30,7 @@ export const Login = async (req: Request, res: Response) => {
     return res.status(200).json({
       message: "Login สำเร็จ",
       user: {
+        user_id: user.user_id,
         username: user.username,
         email: user.email,
         full_name: user.full_name,

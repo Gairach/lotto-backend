@@ -3,15 +3,15 @@ import dotenv from "dotenv";
 import * as os from "os";
 import userRoutes from "./routes/userRoutes";
 import ticketRoutes from "./routes/ticketRoutes";
-
+import clearRoutes from "./routes/clearRoutes";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-app.use("/api/users", userRoutes);
-app.use("/api/tickets", ticketRoutes);
-
+app.use("/users", userRoutes);
+app.use("/tickets", ticketRoutes);
+app.use("/clear", clearRoutes);
 // หา IP ของเครื่อง
 const ip: string = (() => {
   let address = "0.0.0.0";

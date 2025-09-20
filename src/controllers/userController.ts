@@ -37,3 +37,27 @@ export const addUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getUserById = async (req: Request, res: Response) => {
+  const userId = req.params.id;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID required" });
+  }
+
+  try {
+    // ใช้ user_id แทน id
+    const [rows]: any = await db.query(
+      "SELECT user_id, username, email, full_name, role, wallet FROM users WHERE user_id = ?",
+      [userId]
+    );
+
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error("Error getUserById:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};

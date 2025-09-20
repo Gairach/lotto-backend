@@ -7,6 +7,6 @@ app.use(cors());
 app.use(express.json());
 
 // เส้น API สำหรับ users
-app.use('/api/users', userRoutes);
+app.use('/users', userRoutes);
 
 export default app;
