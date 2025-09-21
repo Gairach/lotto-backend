@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import bcrypt from "bcrypt";
 import { db } from "../config/db";
 
 // ดึงผู้ใช้ทั้งหมด
@@ -15,20 +16,24 @@ export const getUsers = async (req: Request, res: Response) => {
 }
 };
 
-// เพิ่มผู้ใช้ใหม่
+// เพิ่มผู้ใช้ใหม่ (hash password ก่อนบันทึก)
 export const addUser = async (req: Request, res: Response) => {
   const { username, password, full_name, email, role, wallet } = req.body;
 
   if (!username || !password) {
-    res.status(400).json({ error: "Username and password are required" });
-    return;
+    return res.status(400).json({ error: "Username and password are required" });
   }
 
   try {
+    // hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // บันทึกลงฐานข้อมูล
     const [result] = await db.query(
       `INSERT INTO users (username, password, full_name, email, role, wallet) 
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [username, password, full_name || null, email || null, role || "member", wallet || 0]
+      [username, hashedPassword, full_name || null, email || null, role || "member", wallet || 0]
     );
 
     res.json({ message: "User created", id: (result as any).insertId });

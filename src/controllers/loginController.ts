@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../config/db";
+import bcrypt from "bcrypt";
 
 export const Login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -21,8 +22,9 @@ export const Login = async (req: Request, res: Response) => {
 
     const user = rows[0];
 
-    // ตรวจสอบรหัสผ่าน
-    if (user.password !== password) {
+    // ตรวจสอบรหัสผ่านด้วย bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res.status(401).json({ error: "รหัสผ่านไม่ถูกต้อง" });
     }
 
